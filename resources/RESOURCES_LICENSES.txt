@@ -1,0 +1,53 @@
+LICENSES, MENTIONS AND GREETINGS
+
+LIBRE HARDWARE MONITOR:
+https://github.com/LibreHardwareMonitor/LibreHardwareMonitor
+Libre Hardware Monitor, a fork of Open Hardware Monitor, is free software that can monitor the temperature sensors, fan speeds, voltages, load and clock speeds of your computer.
+LibreHardwareMonitor is free and open source software licensed under MPL 2.0. You can use it in private and commercial projects.
+Keep in mind that you must include a copy of the license in your project.
+License: Mozilla Public License Version 2.0 (https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/master/LICENSE)
+
+PRESENTMON:
+https://github.com/GameTechDev/PresentMon
+Copyright (C) 2017-2022 Intel Corporation
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+DIGITAL FONT:
+https://www.urbanfonts.com/fonts/Digital_Dismay.font (by Nal)
+FOR ANY USAGE
+Either: Donate money to Andrew McCluskey via PayPal: nal@nalgames.com . I recommend the donation sum is what you feel the font is worth to you and what you feel is right for what you're getting from the font - I make less from doing this than you might think!
+Or: Purchase any item from my store: http://www.zazzle.com/nalgamesstore for rights to use this font.
+Or: Buy me something from my Firebox wishlist: http://www.firebox.com/wish/4iC9fX6N for rights to use this font.
+Or: Send me any game I do not already own to my Steam account: nal-games / nal@nalgames.com
+Or: Send me a gift! I can provide my address on request. Bonus points if the gift is a physical item with my font on it somehow! Money donation also accepted this way.
+FOR NON-COMMERCIAL OR NON-PROFIT USAGE
+Either: Do any of the options from "For Any Usage"
+Or: Drop me a line on nal@nalgames.com telling me you're using it. If possible, include what for, and if you're feeling generous, I'd love to see a sample of my font in action!
+
+FREESANS FONT:
+https://www.gnu.org/software/freefont/
+Free UCS scalable fonts is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+The fonts are distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+As a special exception, if you create a document which uses this font, and embed this font or unaltered portions of this font into the document, this font does not by itself cause the resulting document to be covered by the GNU General Public License. This exception does not however invalidate any other reasons why the document might be covered by the GNU General Public License. If you modify this font, you may extend this exception to your version of the font, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.
+Clarification of exception, regarding intended use of embedded fonts
+The exception to the GNU General Public License for the GNU FreeFont software exempts a user that embeds part or all of the GNU FreeFont software in a document, as well as subsequent users and distributors of the document, from complying with the GNU GPL under some circumstances.
+Specifically, this exemption applies when the embedder has not modified the GNU FreeFont software before embedding it. This is true even though portions of the software become part of the document.
+Therefore users of fonts released with this exception need not concern themselves with the license terms to:
+ - Create a printable file using the fonts.
+ - Publish such a file.
+ - Redistribute such a file.
+ - Publicly display such a file.
+ - Print such a file or display it on the screen.
+However anyone distributing the font software as software separately from the document, even if the way the font software was obtained was to extract it from a document, would have to comply with the GNU GPL.
+A modified version of the GNU FreeFont software must comply with the GNU GPL. It may optionally carry the same exception as the GNU FreeFont software itself, and we recommend releasing modified versions that way. If it does, then users will likewise be permitted to embed the modified version in documents and be exempt from the GNU GPL requirements on those documents.License: https://www.gnu.org/software/freefont/license.html
+
+GAUGE FRAME PNG:
+https://www.uihere.com/free-cliparts/white-circle-black-pattern-transparent-light-effect-element-1406798 (by ???)
+License: For personal use
+
+SHADOW PNG:
+https://imgbin.com/png/QKY1hcgx/background-pattern-shadow-effects-png (by HarriettFr)
+License: Non-commercial use

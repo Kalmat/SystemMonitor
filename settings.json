@@ -1,0 +1,45 @@
+{
+  "gauge_size": "45",
+  "available_styles": ["conky", "gauge", "pie", "arc", "arc_with_indicator", "numbers"],
+  "style": "conky",
+  "orientation": "horizontal",
+  "update_data": "1000",
+  "update_system_mode": "1000",
+  "update_game_mode": "1000",
+
+  "Comment on Show/Hide Key": "This is system-wide (Alt+s), so change it in case of conflict",
+  "show_hide_key": "s",
+
+  "icons_folder": "resources/",
+  "system_icon": "gauge.ico",
+  "gauge_frame": "gauge_frame",
+  "gauge_shadow": "gauge_shadow",
+
+  "fonts_folder": "resources/",
+  "font": "FreeSans",
+  "font_file": "",
+  "gauge_font": "Digital Dismay",
+  "gauge_font_file": "DigitalDismay.otf",
+
+  "opacity": "0.7",
+  "transparent_bg": "False",
+  "colors_comment": "check this site to choose named colors: https://www.wikipython.com/tkinter-ttk-tix/summary-information/colors/",
+  "background_color": "grey19",
+  "titles_font_color": "white",
+  "gauge_type_color": "white",
+  "gauge_indicator_color": "cyan",
+  "gauge_safe_color": "cyan",
+  "gauge_warn_color": "orange",
+  "gauge_critic_color": "red",
+  "gauge_no_available_color": "grey38",
+  "system_name_color": "white",
+  "system_value_color": "white",
+  "fps_background_color": "grey19",
+  "fps_safe_color": "white",
+
+  "win_subsensors_enabled": "False",
+  "print_sys_info": "False",
+  "sys_info_file": "sys_info.txt",
+  "print_to_file": "False",
+  "output_file": "output.txt"
+}

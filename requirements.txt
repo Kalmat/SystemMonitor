@@ -1,0 +1,10 @@
+psutil
+plyer
+playsound
+pillow
+pynput
+pynvml
+pywinctl
+pythonnet; sys_platform == "win32"
+game_overlay_sdk; sys_platform == "win32"
+kalmatools
