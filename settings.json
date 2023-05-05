@@ -1,5 +1,5 @@
 {
-  "gauge_size": "45",
+  "gauge_size": "60",
   "available_styles": ["conky", "gauge", "pie", "arc", "arc_with_indicator", "numbers"],
   "style": "conky",
   "orientation": "horizontal",

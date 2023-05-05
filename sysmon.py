@@ -16,13 +16,14 @@ import threading
 import tkinter as tk
 import traceback
 
-import game_overlay_sdk
-import game_overlay_sdk.injector
 import psutil
 from pynvml.smi import nvidia_smi
 import pywinctl as pwc
 from kalmatools import utils
 from pynput import keyboard
+
+if sys.platform == "win32":
+    import wmi
 
 import settings
 
@@ -288,7 +289,6 @@ class GetData(threading.Thread):
 
         cards = []
         try:
-            import wmi
             pc = wmi.WMI()
             for gpu in pc.Win32_VideoController():
                 cards.append(gpu.Caption.replace("(R)", "").replace("(TM)", "").replace("Corporation", ""))
@@ -437,7 +437,7 @@ class GetData(threading.Thread):
 
         elif gpu_name == "Unknown":
             logging.warning("WARNING: Could not find any compatible Graphic Card!")
-            logging.warning("         Installed Graphic Cards:", ', '.join(x for x in gpu_names))
+            logging.warning("         Installed Graphic Cards: "+', '.join(x for x in gpu_names))
 
         return gpu_name, gpu_installed
 
@@ -446,9 +446,7 @@ class GetData(threading.Thread):
         twarn = 89.0
         tcrit = 91.0
         tmax = 94.0
-        pwarn = 0
-        pcrit = 0
-        pmax = 0
+        pwarn = pcrit = pmax = 150
 
         name, gpu_installed = self.get_gpu_name(settings.archOS)
         self.gpu_static_data = {"name": name, "gpu_installed": gpu_installed,
@@ -501,9 +499,9 @@ class GetData(threading.Thread):
             pmax = int(gpuData.get("power_readings", {}).get("power_limit", 0))
         except:
             pmax = 0
-        self.gpu_static_data["pmax"] = pmax
-        self.gpu_static_data["pwarn"] = pmax * 0.75
-        self.gpu_static_data["pcrit"] = pmax * 0.9
+        self.gpu_static_data["pmax"] = pmax or 150
+        self.gpu_static_data["pwarn"] = pmax * 0.75 or 150
+        self.gpu_static_data["pcrit"] = pmax * 0.9 or 150
 
     def get_nvidia_static_data(self):
 
@@ -543,9 +541,9 @@ class GetData(threading.Thread):
                 pmax = int(float(out_str[1]))
             except:
                 pmax = 0
-            self.gpu_static_data["pmax"] = pmax
-            self.gpu_static_data["pwarn"] = pmax * 0.75
-            self.gpu_static_data["pcrit"] = pmax * 0.9
+            self.gpu_static_data["pmax"] = pmax or 150
+            self.gpu_static_data["pwarn"] = pmax * 0.75 or 150
+            self.gpu_static_data["pcrit"] = pmax * 0.9 or 150
         except:
             logging.error(traceback.format_exc())
 
@@ -747,9 +745,9 @@ class GetData(threading.Thread):
                                       self.gpu_static_data.get("tmax", 0), self.gpu_static_data.get("twarn", 0),
                                       self.gpu_static_data.get("tcrit", 0)))
             self.sensors_data.append(("GPU Fan", self.gpu_data.get("fanspeed", 0), "%", 100, 85, 95))
-            self.sensors_data.append(
-                ("GPU Power", self.gpu_data.get("power", 0), "W", self.gpu_static_data.get("pmax", 0),
-                 self.gpu_static_data.get("pwarn", 0), self.gpu_static_data.get("pcrit", 0)))
+            self.sensors_data.append(("GPU Power", self.gpu_data.get("power", 0), "W",
+                                      self.gpu_static_data.get("pmax", 150), self.gpu_static_data.get("pwarn", 150),
+                                      self.gpu_static_data.get("pcrit", 150)))
 
             self.callback(self.sensors_data, self.sys_data)
 
@@ -906,7 +904,7 @@ class GetFPS_Win(threading.Thread):
                 if self.second < self.currentSecond:
                     self.second = self.currentSecond
                     if self.presentsCount > 0:
-                        fps = round(1000 / (self.msBtwPresents / self.presentsCount))
+                        fps = int(1000 / (self.msBtwPresents / self.presentsCount))
                         # fps = self.presentsCount
                     else:
                         fps = 0
@@ -918,6 +916,12 @@ class GetFPS_Win(threading.Thread):
                     self.msBtwPresents += float(line[9])
                     self.presentsCount += 1
 
+        subprocess.Popen.kill(self.sp)
+        self.cmd = [utils.resource_path(__file__, "resources/PresentMon-1.8.0-x64.exe"), '-terminate_existing']
+        self.sp = subprocess.Popen(self.cmd, shell=False, env={**os.environ, "PYTHONUNBUFFERED": "1"},
+                                   encoding="utf-8", universal_newlines=True,
+                                   creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
         subprocess.Popen.kill(self.sp)
 
 
@@ -961,8 +965,6 @@ class SysMon(tk.Tk):
 
         self.show_sys_data = False
         self.game_mode = False
-        self.overlayMode = False
-        self.overlayInitialized = False
         self.sys_mode_lap = settings.update
         self.game_mode_lap = settings.update_g
         self.mouse_X_pos = 0
@@ -972,7 +974,7 @@ class SysMon(tk.Tk):
         self.size_gap = int(self.gauge_radius / 8)
         self.size_gap1 = int(self.gauge_radius / 13)
         self.size_gap2 = int(self.gauge_radius / 10)
-        self.gauge_font_size = int(self.gauge_radius * 0.5)
+        self.gauge_font_size = int(self.gauge_radius * 0.6)
         self.font_size = self.gauge_font_size / 2.5
 
         # Prepare UI
@@ -1209,22 +1211,6 @@ class SysMon(tk.Tk):
                 name = path[1]
             else:
                 name = appName
-            if "Windows" in settings.archOS and self.game_mode:
-                try:
-                    game_overlay_sdk.injector.release_resources()
-                except:
-                    pass
-                try:
-                    game_overlay_sdk.injector.enable_monitor_logger()
-                    game_overlay_sdk.injector.run_process(appName)
-                    self.overlayMode = True
-                    self.overlayInitialized = True
-                    self.minimize()
-                except:
-                    logging.error(traceback.format_exc())
-                    self.overlayMode = False
-                    self.overlayInitialized = False
-                    self.maximize(findApp=False)
         else:
             if "Windows" in settings.archOS:
                 win = pwc.getActiveWindow()
@@ -1235,24 +1221,7 @@ class SysMon(tk.Tk):
                     except:
                         appName = ""
                     if (appName and appName != "explorer.exe" and "sysmon" not in appName.lower()):
-                        # or (self.overlayMode and self.game_mode):
                         name = appName
-                        # TODO: Can this somehow be done AFTER launching game? (Otherwise, this part is useless)
-                        # if self.overlayMode and self.game_mode:
-                        #     try:
-                        #         game_overlay_sdk.injector.release_resources()
-                        #         # game_overlay_sdk.injector.disble_monitor_logger()
-                        #     except:
-                        #         pass
-                        #     try:
-                        #         game_overlay_sdk.injector.enable_monitor_logger()
-                        #         game_overlay_sdk.injector.start_monitor(name)
-                        #         self.overlayInitialized = True
-                        #     except:
-                        #         logging.error(traceback.format_exc())
-                        #         self.overlayMode = False
-                        #         self.overlayInitialized = False
-                        #         self.maximize(findApp=False)
             elif len(sys.argv) > 1:
                 name = sys.argv[1]
             else:
@@ -1416,29 +1385,6 @@ class SysMon(tk.Tk):
                 font_size=int(self.gauge_font_size * (1.8 if not gauge[2] or self.style == "numbers" else 1)),
                 vtype_font=settings.font
             )
-
-        if self.overlayMode and self.game_mode and self.overlayInitialized:
-            self.displayDataOverlay()
-
-    def displayDataOverlay(self):
-
-        try:
-            game_overlay_sdk.injector.send_message(str(self.sensors_data[0][0]) + ":\t\t\t\t" + str(self.sensors_data[0][1]))
-            game_overlay_sdk.injector.send_message(str(self.sensors_data[1][0]) + ":\t\t" + str(self.sensors_data[1][1]))
-            game_overlay_sdk.injector.send_message(str(self.sensors_data[2][0]) + ":\t\t" + str(self.sensors_data[2][1]))
-            game_overlay_sdk.injector.send_message(str(self.sensors_data[4][0]) + ":\t\t" + str(self.sensors_data[5][1]))
-            game_overlay_sdk.injector.send_message(str(self.sensors_data[5][0]) + ":\t\t" + str(self.sensors_data[5][1]))
-        except game_overlay_sdk.injector.InjectionError as err:
-            if err.exit_code == game_overlay_sdk.injector.CustomExitCodes.TARGET_PROCESS_IS_NOT_CREATED_ERROR.value:
-                pass
-            elif err.exit_code == game_overlay_sdk.injector.CustomExitCodes.TARGET_PROCESS_WAS_TERMINATED_ERROR.value:
-                # in monitor mode we can run process several times so dont need to stop this thread here
-                game_overlay_sdk.injector.release_resources()
-                self.overlayMode = False
-                self.overlayInitialized = False
-                self.maximize(findApp=False)
-            else:
-                logging.error("OVERLAY ERROR", err)
 
     def changeMode(self, mode):
         if mode != self.game_mode:
@@ -1625,10 +1571,7 @@ class Config(tk.Toplevel):
                                 height=1, width=35)
         self.app_name.grid(row=5, column=0, columnspan=2)
         self.app_name.grid_remove()
-        if "Linux" in settings.archOS:
-            self.defaultText = "Full path to game..."
-        else:
-            self.defaultText = "OVERLAY MODE: Full path to game..."
+        self.defaultText = "Full path to game..."
         self.app_name.insert('1.0', self.defaultText)
         self.app_name.bind("<FocusIn>", self.focus_in)
         self.app_name.bind("<FocusOut>", self.focus_out)
@@ -1748,14 +1691,15 @@ class Config(tk.Toplevel):
         else:
             if e.widget not in (self, self.title_label, self.exit_label):
                 e.widget.configure(bg=settings.gnoavail_color)
-            if e.widget == self.mode_radio1 or e.widget == self.app_name:
-                if not self.app_name.grid_info():
-                    self.app_name.grid()
-                    self.app_button.grid()
-                # self.app_name.focus_force()
-            elif e.widget == self.mode_radio2 and self.app_name.grid_info():
-                self.app_name.grid_remove()
-                self.app_button.grid_remove()
+            if "Linux" in settings.archOS:
+                if e.widget == self.mode_radio1 or e.widget == self.app_name:
+                    if not self.app_name.grid_info():
+                        self.app_name.grid()
+                        self.app_button.grid()
+                    # self.app_name.focus_force()
+                elif e.widget == self.mode_radio2 and self.app_name.grid_info():
+                    self.app_name.grid_remove()
+                    self.app_button.grid_remove()
 
     def on_motion(self, e):
         x, y = e.x_root - self.mouse_X_pos, e.y_root - self.mouse_Y_pos
@@ -1797,6 +1741,6 @@ class Config(tk.Toplevel):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='sysmon.log', level=logging.WARNING)
+    logging.basicConfig(level=logging.WARNING, filename='sysmon.log', filemode="w", format='%(asctime)s - %(message)s', datefmt="%Y/%m/%d, %H:%M:%S")
     root = SysMon()
     root.mainloop()
