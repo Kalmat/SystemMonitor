@@ -961,6 +961,7 @@ class SysMon(tk.Tk):
         # Define settings and variables
         self.sensors_data = {}
         self.sys_data = {}
+        self.monitor = None
         self.X = self.Y = self.W = self.H = 0
 
         self.show_sys_data = False
@@ -1441,7 +1442,7 @@ class SysMon(tk.Tk):
         if self.config.state() == "withdrawn":
             if self.confNotStarted:
                 self.confNotStarted = False
-                self.X, self.Y, self.W, self.H = pwc.getWorkArea(self.window.getDisplay())
+                self.X, self.Y, self.W, self.H = pwc.getWorkArea()
                 self.config.geometry('+{0}+{1}'.format(self.X + 20, self.H - self.config.winfo_reqheight() - 20))
             self.config.deiconify()
         self.config.attributes('-topmost', True)
@@ -1460,7 +1461,10 @@ class SysMon(tk.Tk):
             self.geometry('+{0}+{1}'.format(x, y))
 
     def recalcPos(self, x, y):
-        self.X, self.Y, self.W, self.H = pwc.getWorkArea(self.window.getDisplay())
+        monitor = self.window.getDisplay()
+        if self.monitor != monitor:
+            self.monitor = monitor
+            self.X, self.Y, self.W, self.H = pwc.getWorkArea(self.monitor)
         if x <= self.X + 20:
             x = self.X
         elif x + self.winfo_width() + 20 >= self.W:
